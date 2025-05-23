@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -18,10 +18,20 @@ interface MapProps {
   height?: string;
 }
 
+// Component to handle map updates without re-creating the map
+const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [map, center, zoom]);
+  
+  return null;
+};
+
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]);
-  const mapRef = useRef<L.Map>(null);
   
   const destinationCoords: [number, number] = [-22.9218, -42.0749];
 
@@ -34,6 +44,8 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         const route = generateSimpleRoute(mockCoordinates, destinationCoords);
         setRouteCoordinates(route);
       }
+    } else {
+      setRouteCoordinates([]);
     }
   }, [originLocation, showRoute]);
 
@@ -76,22 +88,21 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     ? [(originCoords[0] + destinationCoords[0]) / 2, (originCoords[1] + destinationCoords[1]) / 2]
     : originCoords;
 
-  // Create a stable key that changes when we need to re-render the map
-  const mapKey = `map-${originCoords.join('-')}-${showRoute ? 'route' : 'no-route'}`;
+  const zoom = showRoute ? 6 : 10;
 
   return (
     <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden">
       <MapContainer
-        key={mapKey}
-        center={center}
-        zoom={showRoute ? 6 : 10}
+        center={[-23.5505, -46.6333]}
+        zoom={10}
         style={{ height: '100%', width: '100%' }}
-        ref={mapRef}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        
+        <MapUpdater center={center} zoom={zoom} />
         
         <Marker position={originCoords}>
           <Popup>
