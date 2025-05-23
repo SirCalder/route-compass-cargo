@@ -1,6 +1,6 @@
 
-import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -18,74 +18,26 @@ interface MapProps {
   height?: string;
 }
 
-// Component to handle map updates without re-creating the map
-function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
-  const map = useMap();
-  
-  useEffect(() => {
-    if (map) {
-      map.setView(center, zoom);
-    }
-  }, [map, center, zoom]);
-  
-  return null;
-}
-
-// Component for route display
-function RouteDisplay({ 
-  destinationCoords, 
-  routeCoordinates 
-}: { 
-  destinationCoords: [number, number]; 
-  routeCoordinates: [number, number][] 
-}) {
-  return (
-    <>
-      <Marker position={destinationCoords}>
-        <Popup>
-          Destino: Aeroporto Carlos Alberto da Costa Neves
-        </Popup>
-      </Marker>
-      
-      {routeCoordinates.length > 0 && (
-        <Polyline 
-          positions={routeCoordinates} 
-          color="#454f9f" 
-          weight={4}
-          opacity={0.7}
-        />
-      )}
-    </>
-  );
-}
-
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]);
   
   const destinationCoords: [number, number] = [-22.9218, -42.0749];
 
-  // Default center and zoom
-  const defaultCenter: [number, number] = [-23.5505, -46.6333];
-  const defaultZoom = 10;
-  
-  // Calculate center and zoom based on current state
-  const [center, setCenter] = useState<[number, number]>(defaultCenter);
-  const [zoom, setZoom] = useState<number>(defaultZoom);
-
-  // Update center and zoom when route changes
-  useEffect(() => {
+  // Calculate map center and zoom based on route
+  const getMapCenter = (): [number, number] => {
     if (showRoute && routeCoordinates.length > 0) {
-      setCenter([
+      return [
         (originCoords[0] + destinationCoords[0]) / 2,
         (originCoords[1] + destinationCoords[1]) / 2
-      ]);
-      setZoom(6);
-    } else {
-      setCenter(originCoords);
-      setZoom(10);
+      ];
     }
-  }, [originCoords, destinationCoords, showRoute, routeCoordinates]);
+    return originCoords;
+  };
+
+  const getMapZoom = (): number => {
+    return showRoute && routeCoordinates.length > 0 ? 6 : 10;
+  };
 
   // Update coordinates and route when location changes
   useEffect(() => {
@@ -100,7 +52,7 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     } else {
       setRouteCoordinates([]);
     }
-  }, [originLocation, showRoute, destinationCoords]);
+  }, [originLocation, showRoute]);
 
   const getMockCoordinatesForLocation = (location: string): [number, number] => {
     const locationLower = location.toLowerCase();
@@ -140,16 +92,15 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
   return (
     <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden">
       <MapContainer
-        center={defaultCenter}
-        zoom={defaultZoom}
+        center={getMapCenter()}
+        zoom={getMapZoom()}
         style={{ height: '100%', width: '100%' }}
+        key={`${originCoords[0]}-${originCoords[1]}-${showRoute}`}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        
-        <MapUpdater center={center} zoom={zoom} />
         
         <Marker position={originCoords}>
           <Popup>
@@ -158,10 +109,20 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         </Marker>
         
         {showRoute && routeCoordinates.length > 0 && (
-          <RouteDisplay 
-            destinationCoords={destinationCoords}
-            routeCoordinates={routeCoordinates}
-          />
+          <>
+            <Marker position={destinationCoords}>
+              <Popup>
+                Destino: Aeroporto Carlos Alberto da Costa Neves
+              </Popup>
+            </Marker>
+            
+            <Polyline 
+              positions={routeCoordinates} 
+              color="#454f9f" 
+              weight={4}
+              opacity={0.7}
+            />
+          </>
         )}
       </MapContainer>
     </div>
