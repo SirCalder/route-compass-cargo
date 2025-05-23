@@ -27,12 +27,10 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
 
   useEffect(() => {
     if (originLocation && originLocation.trim() !== '') {
-      // Simple geocoding simulation - in real app, use proper geocoding service
       const mockCoordinates = getMockCoordinatesForLocation(originLocation);
       setOriginCoords(mockCoordinates);
       
       if (showRoute) {
-        // Generate simple route between origin and destination
         const route = generateSimpleRoute(mockCoordinates, destinationCoords);
         setRouteCoordinates(route);
       }
@@ -58,13 +56,11 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
   };
 
   const generateSimpleRoute = (start: [number, number], end: [number, number]): [number, number][] => {
-    // Generate a simple route with some intermediate points
     const latDiff = end[0] - start[0];
     const lngDiff = end[1] - start[1];
     
     const route: [number, number][] = [start];
     
-    // Add some intermediate points for a more realistic route
     for (let i = 1; i < 5; i++) {
       const progress = i / 5;
       const lat = start[0] + (latDiff * progress) + (Math.random() - 0.5) * 0.5;
@@ -86,6 +82,7 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         center={center}
         zoom={showRoute ? 6 : 10}
         style={{ height: '100%', width: '100%' }}
+        key={`${originCoords[0]}-${originCoords[1]}-${showRoute}`}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -99,17 +96,15 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         </Marker>
         
         {showRoute && (
-          <>
-            <Marker position={destinationCoords}>
-              <Popup>
-                Destino: Aeroporto Carlos Alberto da Costa Neves
-              </Popup>
-            </Marker>
-            
-            {routeCoordinates.length > 0 && (
-              <Polyline positions={routeCoordinates} color="#454f9f" weight={4} />
-            )}
-          </>
+          <Marker position={destinationCoords}>
+            <Popup>
+              Destino: Aeroporto Carlos Alberto da Costa Neves
+            </Popup>
+          </Marker>
+        )}
+        
+        {showRoute && routeCoordinates.length > 0 && (
+          <Polyline positions={routeCoordinates} color="#454f9f" weight={4} />
         )}
       </MapContainer>
     </div>
