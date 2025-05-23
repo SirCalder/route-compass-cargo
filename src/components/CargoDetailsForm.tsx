@@ -1,23 +1,26 @@
-
 import { useState } from 'react';
 import { Check, AlertCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
 
 const cargoTypes = [
-  "General Merchandise",
-  "Electronics",
-  "Textiles",
-  "Machinery",
-  "Chemicals",
-  "Food Products",
-  "Automotive Parts",
-  "Pharmaceuticals",
-  "Furniture",
-  "Construction Materials"
+  "Mercadoria Geral",
+  "Eletrônicos",
+  "Têxteis",
+  "Maquinário",
+  "Produtos Químicos",
+  "Produtos Alimentícios",
+  "Peças Automotivas",
+  "Farmacêuticos",
+  "Móveis",
+  "Materiais de Construção"
 ];
 
-const CargoDetailsForm = () => {
+interface CargoDetailsFormProps {
+  onCargoChange?: (cargoDetails: { cargoType: string; weight: number; budget: number }) => void;
+}
+
+const CargoDetailsForm: React.FC<CargoDetailsFormProps> = ({ onCargoChange }) => {
   const [cargoType, setCargoType] = useState('');
   const [weight, setWeight] = useState('');
   const [budget, setBudget] = useState('');
@@ -80,27 +83,28 @@ const CargoDetailsForm = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      toast.success("Cargo details submitted successfully!");
-      // Here you would typically send the data to your backend
-      console.log({
+      const cargoDetails = {
         cargoType,
         weight: parseFloat(weight),
         budget: parseFloat(budget)
-      });
+      };
+      toast.success("Detalhes da carga enviados com sucesso!");
+      onCargoChange?.(cargoDetails);
+      console.log(cargoDetails);
     } else {
-      toast.error("Please correct the errors in the form");
+      toast.error("Por favor, corrija os erros no formulário");
     }
   };
 
   return (
     <Card className="shadow-md rounded-2xl p-5 mb-6 animate-fade-in">
-      <h2 className="text-lg font-semibold mb-4">Cargo Details</h2>
+      <h2 className="text-lg font-semibold mb-4">Detalhes da Carga</h2>
       
       <div className="space-y-4">
         {/* Cargo Type */}
         <div>
-          <label htmlFor="cargoType" className="block text-sm font-medium text-gray-700 mb-1">
-            Cargo Type
+          <label htmlFor="cargoType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Tipo de Carga
           </label>
           <div className="relative">
             <input
@@ -108,22 +112,22 @@ const CargoDetailsForm = () => {
               type="text"
               value={cargoType}
               onChange={(e) => handleCargoTypeChange(e.target.value)}
-              placeholder="Select or type cargo type"
+              placeholder="Selecione ou digite o tipo de carga"
               className={`input-field ${formErrors.cargoType ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
             />
             {formErrors.cargoType && (
               <div className="flex items-center mt-1 text-red-500 text-sm">
                 <AlertCircle className="h-4 w-4 mr-1" />
-                <span>Cargo type is required</span>
+                <span>Tipo de carga é obrigatório</span>
               </div>
             )}
             
             {showCargoDropdown && filteredCargoTypes.length > 0 && (
-              <div className="absolute w-full bg-white mt-1 rounded-xl shadow-lg z-10 border border-gray-100 max-h-60 overflow-auto">
+              <div className="absolute w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-lg z-10 border border-gray-100 dark:border-gray-700 max-h-60 overflow-auto">
                 {filteredCargoTypes.map((type, index) => (
                   <div
                     key={index}
-                    className="p-2 hover:bg-gray-50 cursor-pointer"
+                    className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                     onClick={() => selectCargoType(type)}
                   >
                     {type}
@@ -136,42 +140,42 @@ const CargoDetailsForm = () => {
         
         {/* Weight */}
         <div>
-          <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-1">
-            Average Weight (kg)
+          <label htmlFor="weight" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Peso Médio (kg)
           </label>
           <input
             id="weight"
             type="text"
             value={weight}
             onChange={(e) => handleWeightChange(e.target.value)}
-            placeholder="Enter weight in kg"
+            placeholder="Digite o peso em kg"
             className={`input-field ${formErrors.weight ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {formErrors.weight && (
             <div className="flex items-center mt-1 text-red-500 text-sm">
               <AlertCircle className="h-4 w-4 mr-1" />
-              <span>Weight must be greater than 0</span>
+              <span>Peso deve ser maior que 0</span>
             </div>
           )}
         </div>
         
         {/* Budget */}
         <div>
-          <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
-            Estimated Budget ($)
+          <label htmlFor="budget" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Orçamento Estimado (R$)
           </label>
           <input
             id="budget"
             type="text"
             value={budget}
             onChange={(e) => handleBudgetChange(e.target.value)}
-            placeholder="Enter budget in $"
+            placeholder="Digite o orçamento em R$"
             className={`input-field ${formErrors.budget ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {formErrors.budget && (
             <div className="flex items-center mt-1 text-red-500 text-sm">
               <AlertCircle className="h-4 w-4 mr-1" />
-              <span>Budget must be greater than 0</span>
+              <span>Orçamento deve ser maior que 0</span>
             </div>
           )}
         </div>
@@ -181,7 +185,7 @@ const CargoDetailsForm = () => {
           className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
         >
           <Check className="h-5 w-5" />
-          Submit Cargo Details
+          Enviar Detalhes da Carga
         </button>
       </div>
     </Card>

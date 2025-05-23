@@ -2,23 +2,23 @@
 import { useState } from 'react';
 import { Search, MapPin } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import Map from './Map';
 
-const LocationInput = () => {
+const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: string) => void }) => {
   const [searchValue, setSearchValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
 
-  // Simulated location search
+  // Simulated location search with Brazilian companies
   const handleSearch = (query: string) => {
     setSearchValue(query);
     
-    // Mock API call - in a real app, this would call a geocoding service
     if (query.length > 2) {
       const mockSuggestions = [
-        `${query} Logistics`,
-        `${query} International`,
-        `${query} Shipping Co.`,
-        `${query} Freight Services`
+        `${query} Logística`,
+        `${query} Internacional`,
+        `${query} Transportes`,
+        `${query} Cargas`
       ];
       setSuggestions(mockSuggestions);
     } else {
@@ -30,11 +30,12 @@ const LocationInput = () => {
     setSelectedLocation(location);
     setSearchValue(location);
     setSuggestions([]);
+    onLocationChange?.(location);
   };
 
   return (
     <Card className="shadow-md rounded-2xl p-5 mb-6 animate-fade-in">
-      <h2 className="text-lg font-semibold mb-4">Origin Location</h2>
+      <h2 className="text-lg font-semibold mb-4">Localização de Origem</h2>
       
       <div className="relative">
         <div className="flex items-center border rounded-xl overflow-hidden input-field">
@@ -43,7 +44,7 @@ const LocationInput = () => {
             type="text"
             value={searchValue}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Search company or location"
+            placeholder="Buscar empresa ou localização"
             className="flex-1 py-2 focus:outline-none bg-transparent"
           />
           <button className="p-2">
@@ -53,11 +54,11 @@ const LocationInput = () => {
         
         {/* Suggestions dropdown */}
         {suggestions.length > 0 && (
-          <div className="absolute w-full bg-white mt-1 rounded-xl shadow-lg z-10 border border-gray-100">
+          <div className="absolute w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-lg z-10 border border-gray-100 dark:border-gray-700">
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}
-                className="p-2 hover:bg-gray-50 cursor-pointer"
+                className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                 onClick={() => selectLocation(suggestion)}
               >
                 {suggestion}
@@ -67,13 +68,12 @@ const LocationInput = () => {
         )}
       </div>
       
-      <div className="mt-4 h-60 bg-gray-100 rounded-xl flex items-center justify-center">
-        <p className="text-gray-500">Interactive map will be displayed here</p>
-        {/* This would be replaced with an actual map component */}
+      <div className="mt-4">
+        <Map originLocation={selectedLocation} height="240px" />
       </div>
       
       {selectedLocation && (
-        <div className="mt-4 p-3 bg-neutral-light rounded-xl flex items-center">
+        <div className="mt-4 p-3 bg-neutral-light dark:bg-gray-700 rounded-xl flex items-center">
           <MapPin className="h-5 w-5 text-accent1 mr-2" />
           <span className="text-sm font-medium">{selectedLocation}</span>
         </div>

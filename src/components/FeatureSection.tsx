@@ -5,13 +5,13 @@ const FeatureSection = () => {
   const features = [
     {
       icon: <BarChart3 className="h-8 w-8 text-accent1" />,
-      title: "Prescriptive Analytics",
-      description: "Our powerful algorithms analyze multiple factors to prescribe the optimal transport route, not just predict it."
+      title: "Análise Prescritiva",
+      description: "Nossos algoritmos poderosos analisam múltiplos fatores para prescrever a rota de transporte otimizada, não apenas prevê-la."
     },
     {
       icon: <Zap className="h-8 w-8 text-accent2" />,
-      title: "Instant Results",
-      description: "Get route recommendations in seconds, allowing you to make quick, informed decisions for your shipments."
+      title: "Resultados Instantâneos",
+      description: "Obtenha recomendações de rota em segundos, permitindo que você tome decisões rápidas e informadas para seus envios."
     },
     {
       icon: <div className="flex gap-1">
@@ -20,18 +20,18 @@ const FeatureSection = () => {
         <Train className="h-6 w-6 text-primary" />
         <Plane className="h-6 w-6 text-primary" />
       </div>,
-      title: "Multimodal Analysis",
-      description: "Compare all transport options across waterway, road, rail, and air to find the perfect balance of cost and speed."
+      title: "Análise Multimodal",
+      description: "Compare todas as opções de transporte entre aquaviário, rodoviário, ferroviário e aéreo para encontrar o equilíbrio perfeito entre custo e velocidade."
     }
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Powerful Features</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Our platform leverages cutting-edge technology to optimize your cargo transport routes.
+          <h2 className="text-3xl font-bold mb-4 dark:text-white">Funcionalidades Poderosas</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Nossa plataforma utiliza tecnologia de ponta para otimizar suas rotas de transporte de carga.
           </p>
         </div>
         
@@ -39,13 +39,13 @@ const FeatureSection = () => {
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="bg-neutral-light p-6 rounded-2xl card-hover"
+              className="bg-neutral-light dark:bg-gray-800 p-6 rounded-2xl card-hover"
             >
               <div className="h-16 flex items-center mb-4">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
+              <h3 className="text-xl font-semibold mb-2 dark:text-white">{feature.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
             </div>
           ))}
         </div>
