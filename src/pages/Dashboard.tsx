@@ -40,7 +40,7 @@ const Dashboard = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
-            {/* Transport mode icons */}
+            {/* Ícones de modo de transporte */}
             <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm mb-6 flex justify-between">
               <div className="flex flex-col items-center">
                 <div className="bg-primary/10 p-2 rounded-full">

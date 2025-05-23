@@ -9,7 +9,7 @@ const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: str
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
 
-  // Simulated location search with Brazilian companies
+  // Simulação de busca de localização com empresas brasileiras
   const handleSearch = (query: string) => {
     setSearchValue(query);
     
@@ -52,7 +52,7 @@ const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: str
           </button>
         </div>
         
-        {/* Suggestions dropdown */}
+        {/* Sugestões dropdown */}
         {suggestions.length > 0 && (
           <div className="absolute w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-lg z-10 border border-gray-100 dark:border-gray-700">
             {suggestions.map((suggestion, index) => (
