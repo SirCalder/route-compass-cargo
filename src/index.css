@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +38,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -96,6 +92,22 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
+  }
+
+  .btn-primary {
+    @apply bg-accent1 hover:bg-accent1/90 text-white px-6 py-2.5 rounded-2xl font-medium transition-all ease-in-out duration-200 hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-accent2 hover:bg-accent2/90 text-white px-6 py-2.5 rounded-2xl font-medium transition-all ease-in-out duration-200 hover:shadow-md;
+  }
+
+  .card-hover {
+    @apply transition-all ease-in-out duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .input-field {
+    @apply border border-gray-200 rounded-xl px-4 py-3 w-full focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none;
   }
 }
