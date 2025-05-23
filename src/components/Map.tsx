@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -19,7 +19,7 @@ interface MapProps {
 }
 
 // Component to handle map updates without re-creating the map
-const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
+function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
   
   useEffect(() => {
@@ -27,7 +27,7 @@ const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ cent
   }, [map, center, zoom]);
   
   return null;
-};
+}
 
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
@@ -104,11 +104,13 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         
         <MapUpdater center={center} zoom={zoom} />
         
-        <Marker position={originCoords}>
-          <Popup>
-            Origem: {originLocation || 'Localização selecionada'}
-          </Popup>
-        </Marker>
+        {originCoords && (
+          <Marker position={originCoords}>
+            <Popup>
+              Origem: {originLocation || 'Localização selecionada'}
+            </Popup>
+          </Marker>
+        )}
         
         {showRoute && (
           <>
