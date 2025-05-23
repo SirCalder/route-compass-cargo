@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -29,12 +29,63 @@ function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }
   return null;
 }
 
+// Component for route display
+function RouteDisplay({ 
+  destinationCoords, 
+  routeCoordinates 
+}: { 
+  destinationCoords: [number, number]; 
+  routeCoordinates: [number, number][] 
+}) {
+  return (
+    <>
+      <Marker position={destinationCoords}>
+        <Popup>
+          Destino: Aeroporto Carlos Alberto da Costa Neves
+        </Popup>
+      </Marker>
+      
+      {routeCoordinates.length > 0 && (
+        <Polyline 
+          positions={routeCoordinates} 
+          color="#454f9f" 
+          weight={4}
+          opacity={0.7}
+        />
+      )}
+    </>
+  );
+}
+
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]);
   
   const destinationCoords: [number, number] = [-22.9218, -42.0749];
 
+  // Default center and zoom
+  const defaultCenter: [number, number] = [-23.5505, -46.6333];
+  const defaultZoom = 10;
+  
+  // Calculate center and zoom based on current state
+  const [center, setCenter] = useState<[number, number]>(defaultCenter);
+  const [zoom, setZoom] = useState<number>(defaultZoom);
+
+  // Update center and zoom when route changes
+  useEffect(() => {
+    if (showRoute && routeCoordinates.length > 0) {
+      setCenter([
+        (originCoords[0] + destinationCoords[0]) / 2,
+        (originCoords[1] + destinationCoords[1]) / 2
+      ]);
+      setZoom(6);
+    } else {
+      setCenter(originCoords);
+      setZoom(10);
+    }
+  }, [originCoords, destinationCoords, showRoute, routeCoordinates]);
+
+  // Update coordinates and route when location changes
   useEffect(() => {
     if (originLocation && originLocation.trim() !== '') {
       const mockCoordinates = getMockCoordinatesForLocation(originLocation);
@@ -47,7 +98,7 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     } else {
       setRouteCoordinates([]);
     }
-  }, [originLocation, showRoute]);
+  }, [originLocation, showRoute, destinationCoords]);
 
   const getMockCoordinatesForLocation = (location: string): [number, number] => {
     const locationLower = location.toLowerCase();
@@ -84,18 +135,16 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     return route;
   };
 
-  const center: [number, number] = showRoute && routeCoordinates.length > 0 
-    ? [(originCoords[0] + destinationCoords[0]) / 2, (originCoords[1] + destinationCoords[1]) / 2]
-    : originCoords;
-
-  const zoom = showRoute ? 6 : 10;
-
+  // Memoize the map to prevent unnecessary re-renders
   return (
     <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden">
       <MapContainer
-        center={[-23.5505, -46.6333]}
-        zoom={10}
+        center={defaultCenter}
+        zoom={defaultZoom}
         style={{ height: '100%', width: '100%' }}
+        whenCreated={(map) => {
+          map.setView(center, zoom);
+        }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -112,23 +161,11 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
           </Marker>
         )}
         
-        {showRoute && (
-          <>
-            <Marker position={destinationCoords}>
-              <Popup>
-                Destino: Aeroporto Carlos Alberto da Costa Neves
-              </Popup>
-            </Marker>
-            
-            {routeCoordinates.length > 0 && (
-              <Polyline 
-                positions={routeCoordinates} 
-                color="#454f9f" 
-                weight={4}
-                opacity={0.7}
-              />
-            )}
-          </>
+        {showRoute && routeCoordinates.length > 0 && (
+          <RouteDisplay 
+            destinationCoords={destinationCoords}
+            routeCoordinates={routeCoordinates}
+          />
         )}
       </MapContainer>
     </div>
