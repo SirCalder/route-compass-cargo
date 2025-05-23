@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -60,6 +59,7 @@ function RouteDisplay({
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]);
+  const mapRef = useRef<L.Map | null>(null);
   
   const destinationCoords: [number, number] = [-22.9218, -42.0749];
 
@@ -135,16 +135,20 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     return route;
   };
 
-  // Memoize the map to prevent unnecessary re-renders
+  // Map initialization handler
+  const handleMapReady = (map: L.Map) => {
+    mapRef.current = map;
+    map.setView(center, zoom);
+  };
+
+  // Return the map component
   return (
     <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden">
       <MapContainer
         center={defaultCenter}
         zoom={defaultZoom}
         style={{ height: '100%', width: '100%' }}
-        whenCreated={(map) => {
-          map.setView(center, zoom);
-        }}
+        whenReady={(e) => handleMapReady(e.target)}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
