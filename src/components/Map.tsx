@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -20,9 +20,9 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
-  const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]); // Default São Paulo
+  const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]);
+  const mapRef = useRef<L.Map>(null);
   
-  // Destination: Aeroporto Carlos Alberto da Costa Neves (Cabo Frio)
   const destinationCoords: [number, number] = [-22.9218, -42.0749];
 
   useEffect(() => {
@@ -41,17 +41,17 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     const locationLower = location.toLowerCase();
     
     if (locationLower.includes('rio') || locationLower.includes('rj')) {
-      return [-22.9068, -43.1729]; // Rio de Janeiro
+      return [-22.9068, -43.1729];
     } else if (locationLower.includes('brasília') || locationLower.includes('bsb')) {
-      return [-15.7801, -47.9292]; // Brasília
+      return [-15.7801, -47.9292];
     } else if (locationLower.includes('salvador') || locationLower.includes('ssa')) {
-      return [-12.9714, -38.5014]; // Salvador
+      return [-12.9714, -38.5014];
     } else if (locationLower.includes('belo horizonte') || locationLower.includes('bhz')) {
-      return [-19.9167, -43.9345]; // Belo Horizonte
+      return [-19.9167, -43.9345];
     } else if (locationLower.includes('recife') || locationLower.includes('rec')) {
-      return [-8.0476, -34.8770]; // Recife
+      return [-8.0476, -34.8770];
     } else {
-      return [-23.5505, -46.6333]; // Default São Paulo
+      return [-23.5505, -46.6333];
     }
   };
 
@@ -76,13 +76,17 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     ? [(originCoords[0] + destinationCoords[0]) / 2, (originCoords[1] + destinationCoords[1]) / 2]
     : originCoords;
 
+  // Create a stable key that changes when we need to re-render the map
+  const mapKey = `map-${originCoords.join('-')}-${showRoute ? 'route' : 'no-route'}`;
+
   return (
     <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden">
       <MapContainer
+        key={mapKey}
         center={center}
         zoom={showRoute ? 6 : 10}
         style={{ height: '100%', width: '100%' }}
-        key={`${originCoords[0]}-${originCoords[1]}-${showRoute}`}
+        ref={mapRef}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -96,15 +100,22 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         </Marker>
         
         {showRoute && (
-          <Marker position={destinationCoords}>
-            <Popup>
-              Destino: Aeroporto Carlos Alberto da Costa Neves
-            </Popup>
-          </Marker>
-        )}
-        
-        {showRoute && routeCoordinates.length > 0 && (
-          <Polyline positions={routeCoordinates} color="#454f9f" weight={4} />
+          <>
+            <Marker position={destinationCoords}>
+              <Popup>
+                Destino: Aeroporto Carlos Alberto da Costa Neves
+              </Popup>
+            </Marker>
+            
+            {routeCoordinates.length > 0 && (
+              <Polyline 
+                positions={routeCoordinates} 
+                color="#454f9f" 
+                weight={4}
+                opacity={0.7}
+              />
+            )}
+          </>
         )}
       </MapContainer>
     </div>
