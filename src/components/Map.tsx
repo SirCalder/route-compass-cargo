@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -22,7 +23,9 @@ function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }
   const map = useMap();
   
   useEffect(() => {
-    map.setView(center, zoom);
+    if (map) {
+      map.setView(center, zoom);
+    }
   }, [map, center, zoom]);
   
   return null;
@@ -59,7 +62,6 @@ function RouteDisplay({
 const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "300px" }) => {
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const [originCoords, setOriginCoords] = useState<[number, number]>([-23.5505, -46.6333]);
-  const mapRef = useRef<L.Map | null>(null);
   
   const destinationCoords: [number, number] = [-22.9218, -42.0749];
 
@@ -135,20 +137,12 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
     return route;
   };
 
-  // Map initialization handler
-  const handleMapReady = (map: L.Map) => {
-    mapRef.current = map;
-    map.setView(center, zoom);
-  };
-
-  // Return the map component
   return (
     <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden">
       <MapContainer
         center={defaultCenter}
         zoom={defaultZoom}
         style={{ height: '100%', width: '100%' }}
-        whenReady={(e) => handleMapReady(e.target)}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -157,13 +151,11 @@ const Map: React.FC<MapProps> = ({ originLocation, showRoute = false, height = "
         
         <MapUpdater center={center} zoom={zoom} />
         
-        {originCoords && (
-          <Marker position={originCoords}>
-            <Popup>
-              Origem: {originLocation || 'Localização selecionada'}
-            </Popup>
-          </Marker>
-        )}
+        <Marker position={originCoords}>
+          <Popup>
+            Origem: {originLocation || 'Localização selecionada'}
+          </Popup>
+        </Marker>
         
         {showRoute && routeCoordinates.length > 0 && (
           <RouteDisplay 
