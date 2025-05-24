@@ -41,7 +41,7 @@ const Hero = () => {
               {/* Route map visualization */}
               <div className="rounded-xl w-full h-64 bg-gray-100 dark:bg-gray-700 overflow-hidden">
                 <img 
-                  src="https://tile.openstreetmap.org/8/118/110.png" 
+                  src="src/assets/map.png" 
                   alt="Visualização de Rota de Exemplo" 
                   className="w-full h-full object-cover"
                   style={{ 
