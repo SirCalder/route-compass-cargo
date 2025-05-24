@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search, MapPin } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -9,18 +8,14 @@ const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: str
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
 
-  // Simulação de busca de localização com empresas brasileiras
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearchValue(query);
-    
+
     if (query.length > 2) {
-      const mockSuggestions = [
-        `${query} Logística`,
-        `${query} Internacional`,
-        `${query} Transportes`,
-        `${query} Cargas`
-      ];
-      setSuggestions(mockSuggestions);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      const names = data.map((item: any) => item.display_name);
+      setSuggestions(names);
     } else {
       setSuggestions([]);
     }
@@ -36,7 +31,7 @@ const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: str
   return (
     <Card className="shadow-md rounded-2xl p-5 mb-6 animate-fade-in">
       <h2 className="text-lg font-semibold mb-4">Localização de Origem</h2>
-      
+
       <div className="relative">
         <div className="flex items-center border rounded-xl overflow-hidden input-field">
           <MapPin className="h-5 w-5 text-gray-400 mr-2" />
@@ -51,8 +46,7 @@ const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: str
             <Search className="h-5 w-5 text-gray-400" />
           </button>
         </div>
-        
-        {/* Sugestões dropdown */}
+
         {suggestions.length > 0 && (
           <div className="absolute w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-lg z-10 border border-gray-100 dark:border-gray-700">
             {suggestions.map((suggestion, index) => (
@@ -67,11 +61,11 @@ const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: str
           </div>
         )}
       </div>
-      
+
       <div className="mt-4">
-        <Map originLocation={selectedLocation} height="240px" />
+        <Map originLocation={selectedLocation} height="240px" onMapClick={selectLocation} />
       </div>
-      
+
       {selectedLocation && (
         <div className="mt-4 p-3 bg-neutral-light dark:bg-gray-700 rounded-xl flex items-center">
           <MapPin className="h-5 w-5 text-accent1 mr-2" />
