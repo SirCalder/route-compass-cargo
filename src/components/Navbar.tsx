@@ -11,9 +11,11 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
-            </div>
+          <img
+            src="src/assets/teste2.png"
+            alt="Logo"
+            className="h-12 w-12 rounded-md object-cover"
+          />
             <span className="text-xl font-bold text-primary">ModalMaster</span>
           </Link>
 

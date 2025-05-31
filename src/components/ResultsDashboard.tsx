@@ -35,10 +35,10 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ originLocation = ''
       const costs = calculateRouteCosts(recommendation, cargoDetails);
       
       const modeIcons = {
-        road: <Truck className="h-8 w-8 text-primary" />,
-        waterway: <Ship className="h-8 w-8 text-primary" />,
-        rail: <Train className="h-8 w-8 text-primary" />,
-        air: <Plane className="h-8 w-8 text-primary" />
+        road: <Truck className="h-8 w-8 text-gray-200" />,
+        waterway: <Ship className="h-8 w-8 text-gray-200" />,
+        rail: <Train className="h-8 w-8 text-gray-200" />,
+        air: <Plane className="h-8 w-8 text-gray-200" />
       };
       
       const modeTitles = {

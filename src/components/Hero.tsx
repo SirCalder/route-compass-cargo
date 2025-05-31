@@ -9,7 +9,7 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 md:pr-12">
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-gray-900 dark:text-white mb-6">
-              Otimize Suas Rotas de Transporte de Carga com <span className="text-primary">IA</span>
+              Otimize Suas Rotas de Transporte de Carga com um <span className="text-primary">Modelo Matemático</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Tome decisões mais inteligentes de envio com nossa plataforma de análise prescritiva que recomenda o modo de transporte e rota otimizados para sua carga.
@@ -22,15 +22,15 @@ const Hero = () => {
                 Começar a Otimizar
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <button className="btn-secondary flex items-center justify-center">
+              {/*<button className="btn-secondary flex items-center justify-center">
                 Agendar uma Demo
-              </button>
+              </button>*/}
             </div>
             <div className="mt-8 flex items-center text-sm text-gray-500 dark:text-gray-400">
               <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium mr-2">
-                NOVO
+                BETA
               </span>
-              Nossa plataforma agora inclui análise de emissões de CO₂ para escolhas de transporte sustentáveis
+              Nossa plataforma incluirá análise de emissões de CO₂ para escolhas de transporte sustentáveis
             </div>
           </div>
           <div className="md:w-1/2 mt-12 md:mt-0">

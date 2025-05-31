@@ -14,33 +14,33 @@ const Footer = () => {
               <span className="text-lg font-bold text-primary">ModalMaster</span>
             </div>
             <p className="text-gray-600 text-sm">
-              Optimize your freight export routes with our prescriptive-analytics platform.
+            Otimize suas rotas de exportação de frete com nossa plataforma de análise prescritiva.
             </p>
           </div>
           
           <div>
-            <h3 className="font-semibold mb-4">Platform</h3>
+            <h3 className="font-semibold mb-4">Plataforma</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/features" className="text-gray-600 hover:text-primary transition-colors">
-                  Features
+                  Funcionalidades
                 </Link>
               </li>
               <li>
                 <Link to="/pricing" className="text-gray-600 hover:text-primary transition-colors">
-                  Pricing
+                  Preços
                 </Link>
               </li>
               <li>
                 <Link to="/demo" className="text-gray-600 hover:text-primary transition-colors">
-                  Request Demo
+                  Solicitar Demo
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">Recursos</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/blog" className="text-gray-600 hover:text-primary transition-colors">
@@ -49,12 +49,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/documentation" className="text-gray-600 hover:text-primary transition-colors">
-                  Documentation
+                  Documentação
                 </Link>
               </li>
               <li>
                 <Link to="/support" className="text-gray-600 hover:text-primary transition-colors">
-                  Support
+                  Suporte
                 </Link>
               </li>
             </ul>
@@ -65,17 +65,17 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/privacy" className="text-gray-600 hover:text-primary transition-colors">
-                  Privacy Policy
+                  Política de Privacidade
                 </Link>
               </li>
               <li>
                 <Link to="/terms" className="text-gray-600 hover:text-primary transition-colors">
-                  Terms of Service
+                  Termos de Serviço
                 </Link>
               </li>
               <li>
                 <Link to="/cookie-policy" className="text-gray-600 hover:text-primary transition-colors">
-                  Cookie Policy
+                  Política de Cookies
                 </Link>
               </li>
             </ul>
@@ -84,17 +84,17 @@ const Footer = () => {
         
         <div className="border-t mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} ModalMaster. All rights reserved.
+            &copy; {new Date().getFullYear()} ModalMaster. Todos os direitos reservados.
           </p>
           <div className="flex gap-4 mt-4 md:mt-0">
-            <Link to="#" className="text-gray-500 hover:text-primary transition-colors">
+            <Link to="https://x.com/MasterModal" className="text-gray-500 hover:text-primary transition-colors">
               Twitter
             </Link>
-            <Link to="#" className="text-gray-500 hover:text-primary transition-colors">
+            <Link to="https://www.linkedin.com/in/modal-master-62a087369/" className="text-gray-500 hover:text-primary transition-colors">
               LinkedIn
             </Link>
-            <Link to="#" className="text-gray-500 hover:text-primary transition-colors">
-              Facebook
+            <Link to="https://www.instagram.com/modalmaster25/" className="text-gray-500 hover:text-primary transition-colors">
+              Instagram
             </Link>
           </div>
         </div>

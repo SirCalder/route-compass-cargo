@@ -44,7 +44,7 @@ const Dashboard = () => {
             <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm mb-6 flex justify-between">
               <div className="flex flex-col items-center">
                 <div className="bg-primary/10 p-2 rounded-full">
-                  <Ship className="h-6 w-6 text-primary" />
+                  <Ship className="h-6 w-6 text-gray-400" />
                 </div>
                 <span className="text-xs mt-1">Aquaviário</span>
               </div>
@@ -94,8 +94,8 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
       </div>
-      
       <Footer />
     </div>
   );
