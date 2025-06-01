@@ -11,12 +11,10 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-          <img
-            src="src/assets/teste2.png"
-            alt="Logo"
-            className="h-12 w-12 rounded-md object-cover"
-          />
-            <span className="text-xl font-bold text-primary">ModalMaster</span>
+            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center"> {/* Ajuste h-10 w-10 ou o tamanho que preferir */}
+              <span className="text-white font-bold text-xl">M</span> {/* Ou apenas M, se preferir */}
+            </div>
+            <span className="text-xl font-bold text-primary">Modal Analytics</span>
           </Link>
 
           {/* Desktop Menu */}

@@ -11,7 +11,7 @@ const Footer = () => {
               <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
                 <span className="text-white font-bold text-lg">M</span>
               </div>
-              <span className="text-lg font-bold text-primary">ModalMaster</span>
+              <span className="text-lg font-bold text-primary">Modal Analytics</span>
             </div>
             <p className="text-gray-600 text-sm">
             Otimize suas rotas de exportação de frete com nossa plataforma de análise prescritiva.
@@ -84,7 +84,7 @@ const Footer = () => {
         
         <div className="border-t mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} ModalMaster. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} Modal Analytics. Todos os direitos reservados.
           </p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link to="https://x.com/MasterModal" className="text-gray-500 hover:text-primary transition-colors">

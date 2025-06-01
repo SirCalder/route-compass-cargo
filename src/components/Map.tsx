@@ -1,89 +1,88 @@
-import { useEffect, useRef } from 'react';
-import L from 'leaflet';
+// src/components/Map.tsx
+import React from 'react';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useRoute } from '../contexts/RouteContext';
+import RoutingMachine from './RoutingControl';
+import L from 'leaflet';
 
-interface MapProps {
-  originLocation: string;
-  height?: string;
-  onMapClick?: (location: string) => void;
-  showRoute?: boolean;
-}
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-// Apenas esses estados permitidos
-const estadosPermitidos = ['Santa Catarina', 'Paraná', 'São Paulo'];
 
-const Map = ({ originLocation, height = '300px', onMapClick }: MapProps) => {
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const leafletMap = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
 
-  useEffect(() => {
-    if (mapRef.current && !leafletMap.current) {
-      leafletMap.current = L.map(mapRef.current).setView([-26.7772, -51.0125], 13); // Caçador, SC
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(leafletMap.current);
 
-      leafletMap.current.on('click', async (e: L.LeafletMouseEvent) => {
-        const { lat, lng } = e.latlng;
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: iconRetinaUrl,
+  iconUrl: iconUrl,
+  shadowUrl: shadowUrl,
+});
 
-        // Reverse geocoding com details
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`);
-        const data = await response.json();
+const MapComponent: React.FC = () => {
+  console.log('DEBUG: Conteúdo de import.meta.env:', import.meta.env);
+  console.log('DEBUG: Valor de VITE_GRAPHHOPPER_API_KEY:', import.meta.env.VITE_GRAPHHOPPER_API_KEY);
+  console.log('DEBUG: Valor de VITE_TEST_VAR:', import.meta.env.VITE_TEST_VAR); // Se você adicionou a variável de teste
 
-        const estado = data?.address?.state;
 
-        if (estadosPermitidos.includes(estado)) {
-          const latlng = L.latLng(lat, lng);
-          if (markerRef.current) {
-            markerRef.current.setLatLng(latlng);
-          } else {
-            markerRef.current = L.marker(latlng).addTo(leafletMap.current!);
-          }
+  const { originCoordinates, destinationCoordinates, setRouteSummary, setRouteInstructions } = useRoute(); 
+  console.log('MapComponent: originCoordinates do contexto:', originCoordinates); // <--- ADICIONE AQUI
+  console.log('MapComponent: destinationCoordinates do contexto:', destinationCoordinates); // <--- ADICIONE AQUI
+  const graphHopperApiKey = import.meta.env.VITE_GRAPHHOPPER_API_KEY;
 
-          const locationName = data.display_name;
-          onMapClick?.(locationName);
-        } else {
-          alert('Por favor, selecione uma localização em SC, PR ou SP.');
-        }
-      });
-    }
-  }, []);
+  if (!graphHopperApiKey) {
+    console.error("Chave da API GraphHopper não configurada!");
+    return <div className="flex justify-center items-center h-full"><p className="text-red-500 p-4 bg-red-100 rounded-md">Erro de configuração: Chave da API de roteamento não encontrada.</p></div>;
+  }
 
-  useEffect(() => {
-    if (leafletMap.current && originLocation) {
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=br&q=${encodeURIComponent(originLocation)}`)
-        .then(res => res.json())
-        .then(data => {
-          const resultadoValido = data.find(
-            (item: any) => estadosPermitidos.includes(item.address?.state)
-          );
+  const waypoints: L.LatLng[] = [];
+  if (originCoordinates) {
+    waypoints.push(originCoordinates);
+  }
+  if (destinationCoordinates) {
+    waypoints.push(destinationCoordinates);
+  }
 
-          if (resultadoValido) {
-            const { lat, lon } = resultadoValido;
-            const latlng = L.latLng(parseFloat(lat), parseFloat(lon));
-            leafletMap.current!.setView(latlng, 13);
+  const handleRouteFound = (data: {
+    summary: { totalDistance: number; totalTime: number };
+    instructions: L.Routing.Instruction[];
+  }) => { //
+    setRouteSummary(data.summary); //
+    setRouteInstructions(data.instructions); // Chamar a nova função do contexto
+  };
 
-            if (markerRef.current) {
-              markerRef.current.setLatLng(latlng);
-            } else {
-              markerRef.current = L.marker(latlng).addTo(leafletMap.current!);
-            }
-          } else {
-            alert('Localização fora dos estados permitidos (SC, PR ou SP).');
-          }
-        });
-    }
-  }, [originLocation]);
+  const initialCenter: L.LatLngExpression = destinationCoordinates || [-27.290796, -49.995972];
+  const initialZoom = destinationCoordinates ? 13 : 7;
+
+  const mapStyle: React.CSSProperties = {
+    height: '100%',
+    width: '100%',
+    minHeight: '400px' // Garante uma altura mínima para visualização
+  };
 
   return (
-    <div
-      ref={mapRef}
-      style={{ height, zIndex: 0, position: 'relative' }}
-      className="rounded-xl overflow-hidden"
-    />
+    <MapContainer
+      center={initialCenter}
+      zoom={initialZoom}
+      style={mapStyle}
+      scrollWheelZoom={true}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {waypoints.length >= 2 && (
+        <RoutingMachine
+          waypoints={waypoints}
+          graphHopperApiKey={graphHopperApiKey}
+          onRouteFound={handleRouteFound}
+        // show={false} // Descomente para ocultar o painel de itinerário do LRM
+        />
+      )}
+    </MapContainer>
   );
 };
 
-export default Map;
+export default MapComponent;

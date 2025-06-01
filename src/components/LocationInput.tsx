@@ -1,86 +1,61 @@
-import { useState } from 'react';
-import { Search, MapPin } from 'lucide-react';
+// src/components/LocationInput.tsx (Conforme o seu último input)
+import React, { useState, useEffect } from 'react'; //
+import { useRoute } from '../contexts/RouteContext'; // Ajuste o caminho conforme sua estrutura
 import { Card } from '@/components/ui/card';
-import Map from './Map';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { MapPin, RotateCcw } from 'lucide-react';
 
-const estadosPermitidos = ['Santa Catarina', 'Paraná', 'São Paulo'];
+const LocationInput: React.FC = () => {
+  const [inputValue, setInputValue] = useState(''); //
+  const { geocodeAndSetOrigin, clearRoute, originAddress } = useRoute(); //
 
-const LocationInput = ({ onLocationChange }: { onLocationChange?: (location: string) => void }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState('');
+  useEffect(() => { //
+    setInputValue(originAddress);
+  }, [originAddress]);
 
-  const handleSearch = async (query: string) => {
-    setSearchValue(query);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
 
-    if (query.length > 2) {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=br&q=${encodeURIComponent(query)}`);
-      const data = await res.json();
-
-      const filtradas = data.filter((item: any) =>
-        estadosPermitidos.includes(item.address?.state)
-      );
-
-      setSuggestions(filtradas);
+  const handleCalculateRoute = () => { //
+    if (inputValue.trim()) {
+      geocodeAndSetOrigin(inputValue); //
     } else {
-      setSuggestions([]);
+      alert('Por favor, insira um endereço de origem.'); //
     }
   };
 
-  const selectLocation = (item: any) => {
-    const displayName = item.display_name;
-    setSelectedLocation(displayName);
-    setSearchValue(displayName);
-    setSuggestions([]);
-    onLocationChange?.(displayName);
+  const handleClearRoute = () => { //
+    setInputValue(''); //
+    clearRoute(); //
   };
 
   return (
-    <Card className= "shadow-md rounded-2xl p-5 mb-6 animate-fade-in relative overflow-visible">
-      <h2 className="text-lg font-semibold mb-4">Localização de Origem</h2>
-
-      <div className="relative">
-        <div className="flex items-center border rounded-xl overflow-hidden input-field">
-          <MapPin className="h-5 w-5 text-gray-400 mr-2" />
-          <input
+    <Card className="shadow-md rounded-2xl p-5 animate-fade-in"> {/* Removido mb-6 */}
+      <h2 className="text-lg font-semibold mb-4">Origem da Rota para o Aeroporto</h2>
+      <div className="space-y-4">
+        <div className="relative flex items-center">
+          <MapPin className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Input
             type="text"
-            value={searchValue}
-            onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Buscar empresa ou localização (SC, PR, SP)"
-            className="flex-1 py-2 focus:outline-none bg-transparent"
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder="Digite o endereço de origem"
+            className="pl-10 pr-4 py-2 w-full"
           />
-          <button className="p-2">
-            <Search className="h-5 w-5 text-gray-400" />
-          </button>
         </div>
-
-        {suggestions.length > 0 && (
-          <div className="absolute w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-lg z-50 border border-gray-100 dark:border-gray-700 max-h-60 overflow-auto">
-            {suggestions.map((item, index) => (
-              <div
-                key={index}
-                className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                onClick={() => selectLocation(item)}
-              >
-                {item.display_name}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <Map originLocation={selectedLocation} height="240px" onMapClick={selectLocation} />
-      </div>
-
-      {selectedLocation && (
-        <div className="mt-4 p-3 bg-neutral-light dark:bg-gray-700 rounded-xl flex items-center">
-          <MapPin className="h-5 w-5 text-accent1 mr-2" />
-          <span className="text-sm font-medium">{selectedLocation}</span>
+        <div className="flex space-x-2">
+          <Button onClick={handleCalculateRoute} className="flex-1 btn-primary"> {/* */}
+            Calcular Rota para Aeroporto
+          </Button>
+          <Button onClick={handleClearRoute} variant="outline" className="flex-1"> {/* */}
+            <RotateCcw className="mr-2 h-4 w-4" /> Limpar Rota
+          </Button>
         </div>
-      )}
+      </div>
     </Card>
   );
 };
 
-export default LocationInput;
+export default LocationInput; //

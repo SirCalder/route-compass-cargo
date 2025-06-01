@@ -13,7 +13,10 @@ const cargoTypes = [
   "Peças Automotivas",
   "Farmacêuticos",
   "Móveis",
-  "Materiais de Construção"
+  "Materiais de Construção",
+  "Madeira",
+  "Embalagens"
+  
 ];
 
 interface CargoDetailsFormProps {
@@ -141,14 +144,14 @@ const CargoDetailsForm: React.FC<CargoDetailsFormProps> = ({ onCargoChange }) =>
         {/* Weight */}
         <div>
           <label htmlFor="weight" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Peso Médio (kg)
+            Peso da Carga (toneladas)
           </label>
           <input
             id="weight"
             type="text"
             value={weight}
             onChange={(e) => handleWeightChange(e.target.value)}
-            placeholder="Digite o peso em kg"
+            placeholder="Digite o peso em toneladas"
             className={`input-field ${formErrors.weight ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {formErrors.weight && (

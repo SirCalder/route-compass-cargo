@@ -31,7 +31,7 @@ const FeatureSection = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4 dark:text-white">Funcionalidades Poderosas</h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Nossa plataforma utiliza tecnologia de ponta para otimizar suas rotas de transporte de carga.
+            Nossa plataforma utiliza analítica prescritiva a partir de um modelo matemático exato para apoio à tomada de decisão.
           </p>
         </div>
         

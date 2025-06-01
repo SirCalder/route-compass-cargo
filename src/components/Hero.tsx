@@ -9,10 +9,10 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 md:pr-12">
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-gray-900 dark:text-white mb-6">
-              Otimize Suas Rotas de Transporte de Carga com um <span className="text-primary">Modelo Matemático</span>
+              Planeje investimentos em capacidade logística utilizando nosso <span className="text-primary">Modelo de Otimização</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-              Tome decisões mais inteligentes de envio com nossa plataforma de análise prescritiva que recomenda o modo de transporte e rota otimizados para sua carga.
+              Aplique o orçamento público de maneira mais assertiva para obter o modal de transporte e a rota que garantem um compromisso entre custo de transporte e tempo de entrega.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
